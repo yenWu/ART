@@ -6,6 +6,24 @@
 #define DHTPIN A0     // what pin we're connected to
 #define DHTTYPE DHT11   // DHT 11
 
+//for ros
+#include<ros.h>
+#include <farm/air_meter.h>
+#include <farm/ph_meter.h>
+#include <farm/soil_meter.h>
+#include <farm/sunlight.h>
+
+ros::NodeHandle nh;
+
+farm::air_meter am;
+farm::ph_meter pm;
+farm::soil_meter sm;
+farm::sunlight sl;
+
+ros::Publisher pubam("airmeter",&am);
+ros::Publisher pubpm("phmeter",&pm);
+ros::Publisher pubsm("soilmeter",&sm);
+ros::Publisher pubsl("sunlight",&sl);
 
 #define SensorPin A2            //pH meter Analog output to Arduino Analog Input 0
 #define Offset 0.00            //deviation compensate
@@ -23,15 +41,40 @@ float airtemperature;
 int ir;
 float ph;
 float MoisHumidity;
+
+void wrt_am(farm::air_meter &msg, float tem, float hum){
+   msg.airtemperature  = tem;
+   msg.airhumidity = hum;
+}
+
+void wrt_pm(farm::ph_meter &msg, float ph){
+  msg.ph = ph;  
+}
+
+void wrt_sm(farm::soil_meter &msg, float sm){
+  msg.soilhumidity = sm;  
+}
+
+void wrt_sl(farm::sunlight &msg, int ir){
+  msg.ir = ir;  
+}
+
+
 void setup() {
   // put your setup code here, to run once:
   //Wire.begin();
   Serial.begin(9600); 
   dht.begin();
   while (!SI1145.Begin()) {
-    Serial.println("Si1145 is not ready!");
-    delay(1000);
+    //Serial.println("Si1145 is not ready!");
+    //delay(1000);
   }
+  nh.initNode();
+  nh.advertise(pubam);
+  nh.advertise(pubsl);
+  nh.advertise(pubsm);
+  nh.advertise(pubpm);
+
 }
 
 void loop() {
@@ -43,48 +86,59 @@ void loop() {
   MoisHumidity = -1;
   
   airhumidity = readairhumidity();
-  Serial.print("airhumidity :");Serial.println(airhumidity);
-  delay(1000);
-  airtemperature = readairtemperature();
-  Serial.print("airtemperature :");Serial.println(airtemperature);
-  delay(1000);
+  //Serial.print("airhumidity :");Serial.println(airhumidity);
 
+  airtemperature = readairtemperature();
+//  Serial.print("airtemperature :");Serial.println(airtemperature);
+  //delay(500);
+  wrt_am(am,airtemperature,airhumidity);
+  pubam.publish(&am);
   
   ir = readir();
-  Serial.print("ir :");Serial.println(ir);
-  delay(1000);
+  wrt_sl(sl,ir);
+  pubsl.publish(&sl);
+  //Serial.print("ir :");Serial.println(ir);
+  //delay(1000);
   MoisHumidity = readMoisHumidity();
-  Serial.print("MoisHumidity :");Serial.println(MoisHumidity);
-  delay(1000);
+  wrt_sm(sm,MoisHumidity);
+  pubsm.publish(&sm);
+  //Serial.print("MoisHumidity :");Serial.println(MoisHumidity);
+  //delay(1000);
   
   ph = readph();
-  Serial.print("ph :");Serial.println(ph);
-  delay(1000);
-  Serial.println("--------------------------------------");
+  wrt_pm(pm,ph);
+  pubpm.publish(&pm);
+  //Serial.print("ph :");Serial.println(ph);
+  //delay(1000);
+  //Serial.println("--------------------------------------");
+  
+  nh.spinOnce();
+  //delay(100);
+  
 }
 
 float readph(){
   float ph = -1;
-  static unsigned long samplingTime = millis();
-  static unsigned long printTime = millis();
+  //static unsigned long samplingTime = millis();
+  //static unsigned long printTime = millis();
   static float pHValue,voltage;
-  if(millis()-samplingTime > samplingInterval)
-  {
+  //if(millis()-samplingTime > samplingInterval)
+  //{
       pHArray[pHArrayIndex++]=analogRead(SensorPin);
       if(pHArrayIndex==ArrayLenth)pHArrayIndex=0;
       voltage = avergearray(pHArray, ArrayLenth)*5.0/1024;
       pHValue = 3.5*voltage+Offset;
-      samplingTime=millis();
-  }
-  if(millis() - printTime > printInterval)   //Every 800 milliseconds, print a numerical, convert the state of the LED indicator
-  {
+      //samplingTime=millis();
+  //}
+  //if(millis() - printTime > printInterval)   //Every 800 milliseconds, print a numerical, convert the state of the LED indicator
+  //{
 /*  Serial.print("Voltage:");
   Serial.print(voltage,2);
   Serial.print("    pH value: ");
   Serial.println(pHValue,2);*/
         
-        printTime=millis();
-  }
+        //printTime=millis();
+  //}
   ph = pHValue;
   return ph;
 }
@@ -138,7 +192,7 @@ double avergearray(int* arr, int number){
   double avg;
   long amount=0;
   if(number<=0){
-    Serial.println("Error number for the array to avraging!/n");
+    //Serial.println("Error number for the array to avraging!/n");
     return 0;
   }
   if(number<5){   //less than 5, calculated directly statistics

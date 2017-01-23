@@ -1,3 +1,3 @@
 # for sun light
 
-int32 ir
+int16 ir

@@ -1,4 +1,4 @@
 # for air
 
-float32 airtemperature
-float32 airhumidity
+int16 airtemperature
+int16 airhumidity

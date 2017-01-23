@@ -1,4 +1,4 @@
 # for ph
 
 
-float32 ph
+int16 ph

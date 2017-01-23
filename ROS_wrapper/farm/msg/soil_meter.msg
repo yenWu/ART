@@ -1,3 +1,3 @@
 # for soil
 
-float32 soilhumidity
+int16 soilhumidity

@@ -31,5 +31,5 @@ rosbuild_genmsg()
 #target_link_libraries(example ${PROJECT_NAME})
 
 include_directories( include ..)
-rosbuild_add_executable(modbus_serv src/modbus_serv.cpp)
-rosbuild_add_executable(modbus_clnt src/modbus_clnt.cpp)
+#rosbuild_add_executable(modbus_serv src/modbus_serv.cpp
+#rosbuild_add_executable(modbus_clnt src/modbus_clnt.cpp)

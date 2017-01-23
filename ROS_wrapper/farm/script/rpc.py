@@ -4,7 +4,7 @@ from data_store_manager import DataStoreManager
 import threading
 import xmlrpclib
 
-ip = 'http://192.168.1.30:8000'
+ip = 'http://172.20.10.11:8000'
 
 ###############################################################
 # rpc client for server
@@ -71,6 +71,8 @@ def rpc_server(cid):
     server.serve_forever()
 
 def run_rpc_server(cid):
-    threading.Thread(target=rpc_server, args=(cid,)).start()
+    thread = threading.Thread(target=rpc_server, args=(cid,))
+    thread.daemon = True
+    thread.start()
 
 #####################################################################

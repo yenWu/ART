@@ -2,6 +2,7 @@ from log import Log
 import threading
 import Queue
 import time
+import rospy
 
 log = Log(Log.DEBUG, __file__)
 
@@ -11,7 +12,9 @@ def subscribe_every_sensor():
             sensor.subscribe_value()
         time.sleep(0.1)
 def run_subscribe():
-    threading.Thread(target=subscribe_every_sensor).start()
+    thread = threading.Thread(target=subscribe_every_sensor)
+    thread.daemon = True
+    thread.start()
 
 class DACController(threading.Thread):
 
@@ -19,6 +22,7 @@ class DACController(threading.Thread):
 
     def __init__(self, data_store_manager, cid, did):
         threading.Thread.__init__(self)
+        self.daemon = True
         # arguments
         self.cid = cid
         self.did = did
@@ -65,7 +69,7 @@ class DACController(threading.Thread):
 
     def run(self):
 
-        while True:
+        while not rospy.is_shutdown():
             # get a device from schedule queue
             # if queue is empyt than block
             rule = self.schedule_queue.get()

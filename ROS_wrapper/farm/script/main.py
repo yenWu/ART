@@ -1,14 +1,16 @@
+#!/usr/bin/python
+
 from log import Log
 from data_store_manager import DataStoreManager
 from DAC_controller import DACController, run_subscribe
-from rpc import run_rpc_server, rpc_register
+from rpc import run_rpc_server, rpc_register, rpc_server
 from actuator import Actuator
 from sensor import Sensor
 import os
 import rospy
 from std_msgs.msg import String, Int16
 import sys
-sys.path.append('../src')
+sys.path.append('/home/ubuntu/Desktop/ART/ROS_wrapper/farm/src')
 from farm.msg import sunlight, air_meter, ph_meter, soil_meter, sprinkler
 
 def initlize_ros():
@@ -20,7 +22,7 @@ def initlize_ros():
     sub2 = '/phmeter'
     sub3 = '/soilmeter'
     sub4 = '/sunlight'
-    rospy.init_node('controller', anonymous=True)
+    rospy.init_node('controller')
     rate = rospy.Rate(10)
     return pub1, pub2, pub4, sub0, sub1, sub2, sub3, sub4
 
@@ -45,6 +47,7 @@ def main():
     did = 0
     log.info('start a new dac thread, did: {0}'.format(did))
     thread = DACController(data_store_manager, cid, did)
+    thread.daemon = True
     thread.initial()
 
     tid = 1
@@ -77,6 +80,7 @@ def main():
     did = 1
     log.info('start a new dac thread, did: {0}'.format(did))
     thread = DACController(data_store_manager, cid, did)
+    thread.daemon = True
     thread.initial()
 
     tid = 6
@@ -96,7 +100,7 @@ def main():
 
 ########################################################################
 # register device
-    '''
+
     rpc_register('controller', {'CID':cid})
     rpc_register('dac', {'CID':cid, 'DID':'0'})
     rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'ST', 'TID':'1', 'Address': '40001'})
@@ -108,9 +112,12 @@ def main():
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'6', 'Address': '40006'})
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'7', 'Address': '40007'})
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'8', 'Address': '40008'})
-    '''
+
 ########################################################################
     run_subscribe()
+    while not rospy.is_shutdown():
+        rospy.spin()
+        pass
 
 def get_controller_ip():
     f = os.popen('ifconfig | grep "inet\ addr" | grep -v "127.0.0.1" | cut -d: -f 2 | cut -d" " -f 1 | tr -d "\n"')

@@ -6,6 +6,9 @@
 #define DHTPIN A0     // what pin we're connected to
 #define DHTTYPE DHT11   // DHT 11
 
+//for 433
+#include <RCSwitch.h>
+
 //for ros
 #include<ros.h>
 #include <farm/air_meter.h>
@@ -34,6 +37,8 @@ ros::Publisher pubsl("sunlight",&sl);
 int pHArray[ArrayLenth];   //Store the average value of the sensor feedback
 int pHArrayIndex=0;  
 
+int humidityThreshold = 30;
+
 DHT dht(DHTPIN, DHTTYPE);
 SI114X SI1145 = SI114X();
 int airhumidity;
@@ -41,6 +46,8 @@ int airtemperature;
 int ir;
 int ph;
 int MoisHumidity;
+
+RCSwitch mySwitch = RCSwitch();
 
 void wrt_am(farm::air_meter &msg, int tem, int hum){
    msg.airtemperature  = tem;
@@ -74,6 +81,9 @@ void setup() {
   nh.advertise(pubsl);
   nh.advertise(pubsm);
   nh.advertise(pubpm);
+  
+  //rf 433 switch
+  mySwitch.enableTransmit(17);
 
 }
 
@@ -104,6 +114,15 @@ void loop() {
   pubsm.publish(&sm);
   //Serial.print("MoisHumidity :");Serial.println(MoisHumidity);
   //delay(1000);
+  
+  // send open if humidity greater
+  // 1 for close
+  // 2 for open 
+  /*if (MoisHumidity > humidityThreshold) {
+    mySwitch.send(1, 24);
+  } else {
+    mySwitch.send(2, 24);
+  }*/
   
   ph = readph();
   wrt_pm(pm,ph);

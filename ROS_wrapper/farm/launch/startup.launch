@@ -1,0 +1,26 @@
+<launch>
+    <!-- Controller -->
+        <node pkg="farm" type="main.py" name="Controller" output="screen">
+        </node>
+
+    <!-- Arduino DAC0 -->
+        <node pkg="rosserial_python" type="serial_node.py" name="DAC0" output="screen">
+            <param name="port" value="/dev/ttyACM0" />
+            <param name="baud" value="57600" />
+        </node>
+
+    <!-- Arduino DAC1 -->
+        <node pkg="rosserial_python" type="serial_node.py" name="DAC1" output="screen">
+            <param name="port" value="/dev/ttyACM1" />
+            <param name="baud" value="57600" />
+        </node>
+
+    <!-- Modbus Server -->
+        <node pkg="farm" type="modbus_serv" name="MB_Server" output="screen">
+        </node>
+
+    <!-- Modbus Client -->
+        <node pkg="farm" type="modbus_clnt" name="MB_Client" output="screen">
+        </node>
+
+</launch>

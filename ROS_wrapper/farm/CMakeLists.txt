@@ -16,6 +16,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #set the default path for built libraries to the "lib" directory
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 `pkg-config --libs --cflags libmodbus`")
 #uncomment if you have defined messages
 rosbuild_genmsg()
 #uncomment if you have defined services
@@ -28,3 +29,7 @@ rosbuild_genmsg()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
+
+include_directories( include ..)
+rosbuild_add_executable(modbus_serv src/modbus_serv.cpp)
+rosbuild_add_executable(modbus_clnt src/modbus_clnt.cpp)

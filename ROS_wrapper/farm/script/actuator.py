@@ -15,11 +15,11 @@ class Actuator(EndDevice):
         self.sprinkler = sprinkler
 
     def make_action(self, action):
-        if self.TID == 5:
-            Actuator.r1 = action
         if self.TID == 6:
-            Actuator.r2 = action
+            Actuator.r1 = action
         if self.TID == 7:
+            Actuator.r2 = action
+        if self.TID == 8:
             Actuator.r3 = action
         self.publisher.publish(relay1=self.r1, relay2=self.r2, relay3=self.r3)
         print('actuator {0} take an action {1}'.format(self.TID, action))

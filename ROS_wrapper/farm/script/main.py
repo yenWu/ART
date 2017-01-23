@@ -47,19 +47,19 @@ def main():
     thread = DACController(data_store_manager, cid, did)
     thread.initial()
 
-    tid = 0
+    tid = 1
     log.info('new temp sensor at did: {0}, type:{1}, tid:{2}'.format(did, 'S', tid))
-    temp = Sensor(cid, did, 'ST', tid, 40000, sub0, air_meter)
+    temp = Sensor(cid, did, 'ST', tid, 40001, sub0, air_meter)
     data_store_manager.assign_end_device_to_dac(did, temp)
 
-    tid = 1
+    tid = 2
     log.info('new humid sensor at did: {0}, type:{1}, tid:{2}'.format(did, 'SH', tid))
-    humid = Sensor(cid, did, 'SH', tid, 40001, sub1, air_meter)
+    humid = Sensor(cid, did, 'SH', tid, 40002, sub1, air_meter)
     data_store_manager.assign_end_device_to_dac(did, humid)
 
-    tid = 2
+    tid = 4
     log.info('new soil temp sensor at did: {0}, type:{1}, tid:{2}'.format(did, 'SHE', tid))
-    soil_temp = Sensor(cid, did, 'SHE', tid, 40002, sub2, soil_meter)
+    soil_temp = Sensor(cid, did, 'SHE', tid, 40004, sub2, soil_meter)
     data_store_manager.assign_end_device_to_dac(did, soil_temp)
 
     tid = 3
@@ -67,9 +67,9 @@ def main():
     soil_ph = Sensor(cid, did, 'SPH', tid, 40003, sub3, ph_meter)
     data_store_manager.assign_end_device_to_dac(did, soil_ph)
 
-    tid = 4
+    tid = 5
     log.info('new light sensor at did: {0}, type:{1}, tid:{2}'.format(did, 'SI', tid))
-    light = Sensor(cid, did, 'SI', tid, 40004, sub4, sunlight)
+    light = Sensor(cid, did, 'SI', tid, 40005, sub4, sunlight)
     data_store_manager.assign_end_device_to_dac(did, light)
 
 ########################################################################
@@ -79,19 +79,19 @@ def main():
     thread = DACController(data_store_manager, cid, did)
     thread.initial()
 
-    tid = 5
-    log.info('new irrigrate actuator at did: {0}, type:{1}, tid:{2}'.format(did, 'AW', tid))
-    irr = Actuator(cid, did, 'AW', tid, 40005, pub1, sprinkler)
-    data_store_manager.assign_end_device_to_dac(did, irr)
-
     tid = 6
     log.info('new irrigrate actuator at did: {0}, type:{1}, tid:{2}'.format(did, 'AW', tid))
-    irr = Actuator(cid, did, 'AW', tid, 40006, pub2, sprinkler)
+    irr = Actuator(cid, did, 'AW', tid, 40006, pub1, sprinkler)
     data_store_manager.assign_end_device_to_dac(did, irr)
 
     tid = 7
     log.info('new irrigrate actuator at did: {0}, type:{1}, tid:{2}'.format(did, 'AW', tid))
-    irr = Actuator(cid, did, 'AW', tid, 40007, pub4, sprinkler)
+    irr = Actuator(cid, did, 'AW', tid, 40007, pub2, sprinkler)
+    data_store_manager.assign_end_device_to_dac(did, irr)
+
+    tid = 8
+    log.info('new irrigrate actuator at did: {0}, type:{1}, tid:{2}'.format(did, 'AW', tid))
+    irr = Actuator(cid, did, 'AW', tid, 40008, pub4, sprinkler)
     data_store_manager.assign_end_device_to_dac(did, irr)
 
 ########################################################################
@@ -99,15 +99,15 @@ def main():
     '''
     rpc_register('controller', {'CID':cid})
     rpc_register('dac', {'CID':cid, 'DID':'0'})
-    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'ST', 'TID':'0', 'Address': '40000'})
-    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'SH', 'TID':'1', 'Address': '40001'})
-    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'SHT', 'TID':'2', 'Address': '40002'})
+    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'ST', 'TID':'1', 'Address': '40001'})
+    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'SH', 'TID':'2', 'Address': '40002'})
+    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'SHE', 'TID':'4', 'Address': '40004'})
     rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'SPH', 'TID':'3', 'Address': '40003'})
-    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'SI', 'TID':'4', 'Address': '40004'})
+    rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'SI', 'TID':'5', 'Address': '40005'})
     rpc_register('dac', {'CID':cid, 'DID':'1'})
-    rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'5', 'Address': '40005'})
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'6', 'Address': '40006'})
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'7', 'Address': '40007'})
+    rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'8', 'Address': '40008'})
     '''
 ########################################################################
     run_subscribe()

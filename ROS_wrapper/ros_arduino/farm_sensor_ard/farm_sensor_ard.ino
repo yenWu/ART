@@ -63,7 +63,7 @@ void wrt_sl(farm::sunlight &msg, int ir){
 void setup() {
   // put your setup code here, to run once:
   //Wire.begin();
-  Serial.begin(9600); 
+  //Serial.begin(9600); 
   dht.begin();
   while (!SI1145.Begin()) {
     //Serial.println("Si1145 is not ready!");
@@ -90,7 +90,7 @@ void loop() {
 
   airtemperature = readairtemperature();
   //Serial.print("airtemperature :");Serial.println(airtemperature);
-  delay(500);
+  //delay(500);
   wrt_am(am,airtemperature,airhumidity);
   pubam.publish(&am);
   

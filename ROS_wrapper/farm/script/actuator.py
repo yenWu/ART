@@ -21,9 +21,9 @@ class Actuator(EndDevice):
             Actuator.r2 = action
         if self.TID == 8:
             Actuator.r3 = action
-        self.publisher.publish(relay1=self.r1, relay2=self.r2, relay3=self.r3)
+        self.publisher.publish(relay1=Actuator.r1, relay2=Actuator.r2, relay3=Actuator.r3)
         print('actuator {0} take an action {1}'.format(self.TID, action))
-        print(self.r1, self.r2, self.r3)
+        print(Actuator.r1, Actuator.r2, Actuator.r3)
         self.curr_setting = action
 
     def schedule_action(self, action, duration):

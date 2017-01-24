@@ -62,12 +62,12 @@ def main():
 
     tid = 4
     log.info('new soil temp sensor at did: {0}, type:{1}, tid:{2}'.format(did, 'SHE', tid))
-    soil_temp = Sensor(cid, did, 'SHE', tid, 40004, sub2, soil_meter)
+    soil_temp = Sensor(cid, did, 'SHE', tid, 40004, sub3, soil_meter)
     data_store_manager.assign_end_device_to_dac(did, soil_temp)
 
     tid = 3
     log.info('new ph sensor at did: {0}, type:{1}, tid:{2}'.format(did, 'SPH', tid))
-    soil_ph = Sensor(cid, did, 'SPH', tid, 40003, sub3, ph_meter)
+    soil_ph = Sensor(cid, did, 'SPH', tid, 40003, sub2, ph_meter)
     data_store_manager.assign_end_device_to_dac(did, soil_ph)
 
     tid = 5
@@ -100,7 +100,7 @@ def main():
 
 ########################################################################
 # register device
-
+    '''
     rpc_register('controller', {'CID':cid})
     rpc_register('dac', {'CID':cid, 'DID':'0'})
     rpc_register('sensor', {'CID':cid, 'DID':'0', 'Type':'ST', 'TID':'1', 'Address': '40001'})
@@ -112,7 +112,7 @@ def main():
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'6', 'Address': '40006'})
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'7', 'Address': '40007'})
     rpc_register('actuator', {'CID':cid, 'DID':'1', 'Type':'AW', 'TID':'8', 'Address': '40008'})
-
+    '''
 ########################################################################
     run_subscribe()
     while not rospy.is_shutdown():
